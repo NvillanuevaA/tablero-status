@@ -1,38 +1,56 @@
-<script>
-  async function fetchExcelFromURL(url) {
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
-    const sheetName = workbook.SheetNames[0];
-    const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Tablero de Estado de Llaves</title>
+  https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js
+  https://code.jquery.com/jquery-3.6.0.min.js
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.n.css
+  https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js
+</head>
+<body>
+  <h2>Tablero de Estado de Llaves</h2>
+  <table id="excelData" class="display" style="width:100%">
+    <thead></thead>
+    <tbody></tbody>
+  </table>
 
-    const thead = document.querySelector("#excelData thead");
-    const tbody = document.querySelector("#excelData tbody");
-    thead.innerHTML = "";
-    tbody.innerHTML = "";
+  <script>
+    async function fetchExcelFromGitHub() {
+      const url = "https://raw.githubusercontent.com/villniaa/tablero-status/main/Estado_Llave.xlsx";
+      const response = await fetch(url);
+      const arrayBuffer = await response.arrayBuffer();
+      const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+      const sheetName = workbook.SheetNames[0];
+      const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
 
-    const headerRow = document.createElement("tr");
-    sheet[0].forEach(cell => {
-      const th = document.createElement("th");
-      th.textContent = cell;
-      headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
+      const thead = document.querySelector("#excelData thead");
+      const tbody = document.querySelector("#excelData tbody");
+      thead.innerHTML = "";
+      tbody.innerHTML = "";
 
-    sheet.slice(1).forEach(row => {
-      const tr = document.createElement("tr");
-      row.forEach(cell => {
-        const td = document.createElement("td");
-        td.textContent = cell;
-        tr.appendChild(td);
+      const headerRow = document.createElement("tr");
+      sheet[0].forEach(cell => {
+        const th = document.createElement("th");
+        th.textContent = cell;
+        headerRow.appendChild(th);
       });
-      tbody.appendChild(tr);
-    });
+      thead.appendChild(headerRow);
 
-    $('#excelData').DataTable();
-  }
+      sheet.slice(1).forEach(row => {
+        const tr = document.createElement("tr");
+        row.forEach(cell => {
+          const td = document.createElement("td");
+          td.textContent = cell;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
 
-  // Reemplaza esta URL con la de tu archivo Excel público
-  const excelURL = "https://mysite.bhpbilliton.com/:x:/g/personal/nicolas_villanueva_bhp_com/Ec62ezu1OZxKiJxem-YL-tgByEhipYeQlWwGNJAbCtMunw?e=fUdo1i";
-  fetchExcelFromURL(excelURL);
-</script>
+      $('#excelData').DataTable();
+    }
+
+    fetchExcelFromGitHub();
+  </script>
+</body>
+</html>
