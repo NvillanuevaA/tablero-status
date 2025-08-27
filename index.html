@@ -1,0 +1,38 @@
+<script>
+  async function fetchExcelFromURL(url) {
+    const response = await fetch(url);
+    const arrayBuffer = await response.arrayBuffer();
+    const workbook = XLSX.read(arrayBuffer, { type: 'array' });
+    const sheetName = workbook.SheetNames[0];
+    const sheet = XLSX.utils.sheet_to_json(workbook.Sheets[sheetName], { header: 1 });
+
+    const thead = document.querySelector("#excelData thead");
+    const tbody = document.querySelector("#excelData tbody");
+    thead.innerHTML = "";
+    tbody.innerHTML = "";
+
+    const headerRow = document.createElement("tr");
+    sheet[0].forEach(cell => {
+      const th = document.createElement("th");
+      th.textContent = cell;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+
+    sheet.slice(1).forEach(row => {
+      const tr = document.createElement("tr");
+      row.forEach(cell => {
+        const td = document.createElement("td");
+        td.textContent = cell;
+        tr.appendChild(td);
+      });
+      tbody.appendChild(tr);
+    });
+
+    $('#excelData').DataTable();
+  }
+
+  // Reemplaza esta URL con la de tu archivo Excel público
+  const excelURL = "https://mysite.bhpbilliton.com/:x:/g/personal/nicolas_villanueva_bhp_com/Ec62ezu1OZxKiJxem-YL-tgByEhipYeQlWwGNJAbCtMunw?e=fUdo1i";
+  fetchExcelFromURL(excelURL);
+</script>
